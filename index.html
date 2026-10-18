@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Technical Documentation</title>
+  <style>
+    :root {
+      --ink: #0a0a0a;
+      --paper: #f7f6f3;
+      --white: #ffffff;
+      --line: #d8d6d0;
+      --mute: #5c5c5c;
+      --soft: #efeee9;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.08);
+      --serif: Georgia, "Palatino Linotype", Palatino, "Times New Roman", serif;
+      --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    a { color: inherit; }
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 36px 28px;
+      border-right: 1px solid var(--ink);
+      background: var(--white);
+      overflow-y: auto;
+    }
+
+    .brand {
+      font-family: var(--serif);
+      font-size: 1.7rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+    .brand span { display: block; font-size: 0.62rem; letter-spacing: 0.32em; margin-top: 10px; font-family: var(--sans); font-weight: 500; color: var(--mute); }
+
+    .nav-meta {
+      margin: 28px 0 32px;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mute);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 14px 0;
+    }
+
+    nav ol { list-style: none; display: grid; gap: 4px; }
+    nav a {
+      text-decoration: none;
+      display: flex;
+      gap: 12px;
+      padding: 9px 0;
+      font-size: 0.88rem;
+      border-bottom: 1px solid transparent;
+    }
+    nav a:hover { border-bottom-color: var(--ink); }
+    nav a b { font-weight: 500; min-width: 1.4rem; font-variant-numeric: tabular-nums; }
+
+    main { padding: 0; }
+    .hero, section, footer { padding: 72px 84px; }
+    .hero {
+      background: var(--ink);
+      color: var(--white);
+      min-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -8%;
+      top: -18%;
+      width: 520px;
+      height: 520px;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 50%;
+    }
+    .kicker {
+      font-size: 0.75rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0.72;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(4.2rem, 9vw, 8.4rem);
+      line-height: 0.84;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      max-width: 9ch;
+    }
+    .hero p.lead {
+      max-width: 38rem;
+      margin-top: 28px;
+      font-size: 1.08rem;
+      color: rgba(255,255,255,0.78);
+      font-weight: 300;
+    }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 36px; }
+    .pill {
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 8px 14px;
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .meta-row {
+      display: flex;
+      gap: 36px;
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.18);
+      font-size: 0.82rem;
+    }
+    .meta-row small { display: block; opacity: 0.55; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.68rem; margin-bottom: 6px; }
+
+    section {
+      background: var(--white);
+      border-bottom: 1px solid var(--line);
+    }
+    section.alt { background: var(--paper); }
+    h2 {
+      font-family: var(--serif);
+      font-size: 3.1rem;
+      font-weight: 600;
+      line-height: 1;
+      margin-bottom: 18px;
+    }
+    h3 {
+      font-family: var(--serif);
+      font-size: 1.7rem;
+      font-weight: 600;
+      margin: 36px 0 12px;
+    }
+    h4 {
+      font-size: 0.86rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 28px 0 10px;
+    }
+    p { margin: 0 0 14px; color: #1c1c1c; max-width: 72ch; }
+    .intro { font-size: 1.12rem; color: var(--mute); max-width: 68ch; margin-bottom: 28px; }
+
+    .note, .tip, .warn {
+      border: 1px solid var(--ink);
+      padding: 18px 22px;
+      margin: 22px 0 28px;
+      background: var(--white);
+      max-width: 78ch;
+    }
+    .warn { background: var(--ink); color: var(--white); }
+    .warn p, .note p, .tip p { color: inherit; margin: 0; }
+    .label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    ol.steps, ul.clean { margin: 8px 0 22px 0; max-width: 70ch; }
+    ol.steps { padding-left: 1.2rem; }
+    ul.clean { list-style: none; }
+    ul.clean li, ol.steps li { margin: 8px 0; }
+    ul.clean li::before { content: "— "; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 28px;
+      font-size: 0.92rem;
+    }
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid var(--ink);
+      padding: 12px 10px;
+      vertical-align: top;
+    }
+    th {
+      font-size: 0.7rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 600;
+      background: var(--ink);
+      color: var(--white);
+      border-bottom: 1px solid var(--ink);
+    }
+    tr:nth-child(even) td { background: var(--soft); }
+
+    pre, code { font-family: "Courier New", ui-monospace, monospace; }
+    pre {
+      background: var(--ink);
+      color: var(--white);
+      padding: 20px 22px;
+      overflow-x: auto;
+      margin: 12px 0 24px;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      max-width: 78ch;
+    }
+    p code, li code, td code {
+      background: var(--soft);
+      padding: 1px 6px;
+      border: 1px solid var(--line);
+      font-size: 0.86em;
+    }
+    pre code { background: none; border: 0; padding: 0; color: inherit; }
+
+    .flow {
+      margin: 28px 0;
+      padding: 32px 24px;
+      border: 1px solid var(--ink);
+      background: var(--white);
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .node {
+      flex: 1;
+      min-width: 140px;
+      border: 1px solid var(--ink);
+      padding: 18px 14px;
+      text-align: center;
+      background: var(--paper);
+    }
+    .node strong { display: block; font-family: var(--serif); font-size: 1.25rem; }
+    .node span { display: block; font-size: 0.75rem; color: var(--mute); margin-top: 6px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .arrow {
+      font-size: 1.4rem;
+      font-weight: 300;
+      min-width: 28px;
+      text-align: center;
+    }
+    .flow p { margin: 18px 0 0; font-size: 0.88rem; color: var(--mute); }
+
+    .prompt {
+      border-left: 3px solid var(--ink);
+      padding: 16px 20px;
+      margin: 14px 0 26px;
+      background: var(--paper);
+      max-width: 80ch;
+    }
+    .prompt em { color: var(--mute); display: block; margin-top: 10px; font-style: italic; }
+
+    .checks { list-style: none; max-width: 78ch; }
+    .checks li {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .box {
+      width: 14px; height: 14px;
+      border: 1px solid var(--ink);
+      margin-top: 5px;
+    }
+
+    footer {
+      background: var(--ink);
+      color: var(--white);
+      text-align: left;
+    }
+    footer .end {
+      font-family: var(--serif);
+      font-size: 3rem;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      nav { position: relative; height: auto; border-right: 0; border-bottom: 1px solid var(--ink); }
+      .hero, section, footer { padding: 48px 24px; }
+      h1 { font-size: 4.4rem; }
+      h2 { font-size: 2.4rem; }
+    }
+
+    @media print {
+      nav { display: none; }
+      .layout { display: block; }
+      .hero, section, footer { padding: 24px; break-inside: avoid; }
+      .hero { min-height: auto; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      pre, th, .warn, footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav>
+      <div class="brand">TaskFlow<span>Technical Documentation</span></div>
+      <div class="nav-meta">Version 1.0<br>18 October 2026<br>Draft pending verification</div>
+      <ol>
+        <li><a href="#cover"><b>00</b> Cover</a></li>
+        <li><a href="#start"><b>01</b> Getting Started</a></li>
+        <li><a href="#api"><b>02</b> API Reference</a></li>
+        <li><a href="#help"><b>03</b> Troubleshooting</a></li>
+        <li><a href="#qa"><b>04</b> QA Checklist</a></li>
+        <li><a href="#prompts"><b>05</b> Prompt History</a></li>
+        <li><a href="#reflect"><b>06</b> Reflection</a></li>
+        <li><a href="#appendix"><b>A</b> Release Checklist</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <header class="hero" id="cover">
+        <div class="kicker">Getting Started · API Reference · Troubleshooting</div>
+        <h1>TaskFlow</h1>
+        <p class="lead">Technical documentation for a task-management web application. Prepared as an AI-assisted documentation lab submission.</p>
+        <div class="pills">
+          <span class="pill">Document 1.0</span>
+          <span class="pill">18 October 2026</span>
+          <span class="pill">Black &amp; white edition</span>
+          <span class="pill">Draft template</span>
+        </div>
+        <div class="meta-row">
+          <div><small>Audience</small>Users, developers, QA, maintainers</div>
+          <div><small>Status</small>Pending verification against source</div>
+          <div><small>Format</small>Monochrome text, tables, one diagram</div>
+        </div>
+      </header>
+
+      <section>
+        <h2>Document control</h2>
+        <p class="intro">How to use this document: read Getting Started for user-facing guidance. Developers should treat the API Reference as a proposed contract until routes, authentication, schemas, and status codes are verified. QA testers can use the acceptance checks and troubleshooting guidance to plan tests. Replace every illustrative detail with confirmed project behaviour before final release.</p>
+        <table>
+          <thead>
+            <tr><th>Item</th><th>Details</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Project</td><td>TaskFlow — fictional task management web application</td></tr>
+            <tr><td>Audience</td><td>End users, developers, QA testers, and maintainers</td></tr>
+            <tr><td>Purpose</td><td>Explain basic use, document a proposed API contract, help resolve common issues, and record the AI prompting process.</td></tr>
+            <tr><td>Status</td><td>Draft template pending verification against the actual TaskFlow code and specifications</td></tr>
+            <tr><td>Formatting</td><td>Black-and-white text and tables; one conceptual workflow diagram</td></tr>
+          </tbody>
+        </table>
+        <div class="warn">
+          <span class="label">Important accuracy note</span>
+          <p>The assignment brief describes TaskFlow but does not include its actual source code, API specification, or screenshots. Therefore this document is a detailed draft for a typical task-management web application. API paths, request fields, and behaviours marked “proposed / illustrative” must be checked against the real project before this is submitted as verified technical documentation.</p>
+        </div>
+      </section>
+
+      <section id="start" class="alt">
+        <h2>1. Getting Started</h2>
+        <p class="intro">A typical workflow for signing in, viewing tasks, creating a task, updating its status, and finding tasks again.</p>
+
+        <h3>1.1 What is TaskFlow?</h3>
+        <p>TaskFlow is described in this lab as a task-management web application. Because the actual application screens were not supplied, button labels and screen layouts below are examples rather than confirmed interface details.</p>
+
+        <h3>1.2 Before you begin</h3>
+        <ul class="clean">
+          <li>Use the TaskFlow web address supplied by your organisation or instructor.</li>
+          <li>Have an account and sign-in details if the application requires authentication.</li>
+          <li>Use a supported, up-to-date browser such as Chrome, Firefox, Edge, or Safari.</li>
+          <li>If you are testing a development build, ask the project team for the correct environment URL and test account.</li>
+        </ul>
+
+        <h3>1.3 Sign in</h3>
+        <ol class="steps">
+          <li>Open the TaskFlow web address in your browser.</li>
+          <li>If a sign-in page appears, enter your registered email or username and password.</li>
+          <li>Select the sign-in action.</li>
+          <li>If sign-in fails, check spelling, Caps Lock, and whether the account has been activated. Use the approved password-reset process if one is available.</li>
+        </ol>
+        <div class="tip">
+          <span class="label">Security tip</span>
+          <p>Do not share your password or include it in screenshots, support tickets, or AI prompts.</p>
+        </div>
+
+        <h3>1.4 View your tasks</h3>
+        <p>After signing in, open the task list or dashboard. A task list commonly shows a task title, description, status, and dates. Use the available search, filter, or sort controls if the application provides them. The actual fields and controls must be confirmed in the TaskFlow interface.</p>
+
+        <h3>1.5 Create a task</h3>
+        <p>A typical task-creation workflow is:</p>
+        <ul class="clean">
+          <li>Open the task list or dashboard.</li>
+          <li>Choose the action for creating a new task (the exact label may vary).</li>
+          <li>Enter a short, meaningful title.</li>
+          <li>Add a description if more detail is needed.</li>
+          <li>Choose an available status or due date if those fields are offered.</li>
+          <li>Review the details and submit the form.</li>
+          <li>Confirm that the new task appears in the task list and that any success message is displayed.</li>
+        </ul>
+        <h4>Example task (illustrative)</h4>
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Title</td><td>Prepare weekly report</td></tr>
+            <tr><td>Description</td><td>Collect the latest project updates and prepare a summary for the team.</td></tr>
+            <tr><td>Status</td><td>Pending</td></tr>
+          </tbody>
+        </table>
+
+        <h3>1.6 Update a task</h3>
+        <p>Open the task you want to change, edit the supported fields, and save the changes. If the application uses status values such as Pending, In Progress, and Completed, select the appropriate value. Confirm that the saved status remains visible after refreshing the page. Do not assume that these exact status values exist until the application confirms them.</p>
+
+        <h3>1.7 Find or review a task</h3>
+        <p>Use search or filters if available. Search using a distinctive word from the title. If there are status filters, try narrowing the list to the relevant status. Clear filters when a task appears to be missing. If TaskFlow does not offer search or filtering, use the list navigation provided by the actual application.</p>
+
+        <h3>1.8 Sign out</h3>
+        <p>Use the application's sign-out control when working on a shared computer. Close the browser after signing out. If the application does not have a visible sign-out option, report this to the project team rather than assuming that closing the tab ends the session.</p>
+
+        <h3>1.9 Good task-writing practices</h3>
+        <ul class="clean">
+          <li>Use specific titles: “Review login validation” is clearer than “Work”.</li>
+          <li>Describe the expected result, not only the activity.</li>
+          <li>Keep private credentials and sensitive personal information out of task descriptions.</li>
+          <li>Update task status when work progresses.</li>
+          <li>Report errors with the time, action, and exact message, but remove passwords and tokens.</li>
+        </ul>
+
+        <h3>1.10 Conceptual request flow</h3>
+        <p>This diagram is a conceptual illustration, not a confirmed TaskFlow architecture. A real application may use different components, hosting, or data storage.</p>
+        <div class="flow">
+          <div class="flow-row">
+            <div class="node"><strong>User</strong><span>Browser</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><strong>TaskFlow UI</strong><span>Web application</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><strong>API</strong><span>Proposed /api</span></div>
+            <div class="arrow">→</div>
+            <div class="node"><strong>Store</strong><span>Tasks &amp; users</span></div>
+          </div>
+          <p>Sign in → list or create tasks → update status → persist changes. Confirm the real path in source code before treating this as architecture documentation.</p>
+        </div>
+      </section>
+
+      <section id="api">
+        <h2>2. API Reference</h2>
+        <div class="note">
+          <span class="label">Status: proposed / illustrative</span>
+          <p>No TaskFlow API specification or source code was supplied with the assignment brief. The routes and JSON examples below are a starter contract for discussion and QA planning; they are not verified facts about the actual application. Before release, inspect route/controller code, authentication middleware, validation rules, and real test results.</p>
+        </div>
+
+        <h3>2.1 API conventions (proposed)</h3>
+        <ul class="clean">
+          <li>Base URL: use the base URL configured for the actual environment. The example <code>/api</code> prefix below is illustrative.</li>
+          <li>Format: JSON request and response bodies, where supported.</li>
+          <li>Authentication: the examples assume a bearer access token. Replace this with the actual mechanism if TaskFlow uses sessions, cookies, or another approach.</li>
+          <li>Identifiers: examples use string IDs such as <code>task_123</code>; the actual ID format may differ.</li>
+          <li>Dates: examples use ISO 8601 timestamps. Confirm whether the real API uses dates, timestamps, or another format.</li>
+        </ul>
+        <h4>Illustrative base URL</h4>
+        <pre><code>https://&lt;taskflow-host&gt;/api</code></pre>
+        <h4>Illustrative authenticated request header</h4>
+        <pre><code>Authorization: Bearer &lt;access-token&gt;
+Content-Type: application/json</code></pre>
+
+        <h3>2.2 Endpoint summary</h3>
+        <table>
+          <thead>
+            <tr><th>Method</th><th>Path (illustrative)</th><th>Purpose</th><th>Expected outcomes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>POST</td><td>/auth/login</td><td>Sign in and obtain authentication credentials</td><td>200, 400/401</td></tr>
+            <tr><td>GET</td><td>/tasks</td><td>List tasks available to the signed-in user</td><td>200, 401/403</td></tr>
+            <tr><td>POST</td><td>/tasks</td><td>Create a task</td><td>201, 400/401/403</td></tr>
+            <tr><td>GET</td><td>/tasks/{id}</td><td>Get one task by ID</td><td>200, 401/403/404</td></tr>
+            <tr><td>PATCH</td><td>/tasks/{id}</td><td>Update supported task fields</td><td>200, 400/401/403/404</td></tr>
+            <tr><td>DELETE</td><td>/tasks/{id}</td><td>Delete a task, if deletion is supported</td><td>204, 401/403/404</td></tr>
+          </tbody>
+        </table>
+        <p>The endpoint list is a proposal, not evidence that these routes exist. Remove unsupported endpoints and document actual paths and status codes from the project.</p>
+
+        <h3>2.3 POST /auth/login — proposed</h3>
+        <p>Purpose: authenticate a user. This route is only applicable if the actual application exposes a login API.</p>
+        <h4>Request body (illustrative)</h4>
+        <pre><code>{
+  "email": "alex@example.com",
+  "password": "example-password"
+}</code></pre>
+        <h4>Success response (illustrative — HTTP 200)</h4>
+        <pre><code>{
+  "accessToken": "&lt;redacted-example-token&gt;",
+  "tokenType": "Bearer",
+  "user": {
+    "id": "user_123",
+    "email": "alex@example.com"
+  }
+}</code></pre>
+        <p>Possible errors: <strong>400 Bad Request</strong> — required fields are missing or malformed. <strong>401 Unauthorized</strong> — credentials are invalid, if the API uses this response.</p>
+        <div class="tip">
+          <span class="label">Security</span>
+          <p>Never use a real password or token in documentation. Confirm token expiry, refresh behaviour, and the actual response fields from code.</p>
+        </div>
+
+        <h3>2.4 GET /tasks — proposed</h3>
+        <p>Purpose: retrieve tasks visible to the authenticated user. Confirm whether the real system returns all tasks, only the user's tasks, or tasks scoped by a team or workspace.</p>
+        <h4>Success response (illustrative — HTTP 200)</h4>
+        <pre><code>{
+  "items": [
+    {
+      "id": "task_123",
+      "title": "Prepare weekly report",
+      "description": "Collect updates and prepare a summary.",
+      "status": "PENDING",
+      "dueDate": "2026-10-25"
+    }
+  ]
+}</code></pre>
+        <p>The <code>items</code> envelope, field names, and status values are examples. Actual APIs may return an array directly or use pagination fields such as <code>page</code>, <code>size</code>, and <code>total</code>.</p>
+
+        <h3>2.5 POST /tasks — proposed</h3>
+        <p>Purpose: create a task when the user is permitted to do so.</p>
+        <h4>Request body (illustrative)</h4>
+        <pre><code>{
+  "title": "Prepare weekly report",
+  "description": "Collect updates and prepare a summary.",
+  "status": "PENDING",
+  "dueDate": "2026-10-25"
+}</code></pre>
+        <h4>Success response (illustrative — HTTP 201 Created)</h4>
+        <pre><code>{
+  "id": "task_123",
+  "title": "Prepare weekly report",
+  "description": "Collect updates and prepare a summary.",
+  "status": "PENDING",
+  "dueDate": "2026-10-25"
+}</code></pre>
+        <h4>Validation cases to verify</h4>
+        <ul class="clean">
+          <li>Missing or blank title.</li>
+          <li>Title or description longer than the application's limit.</li>
+          <li>Unsupported status value.</li>
+          <li>Invalid date format or a date outside the allowed range.</li>
+          <li>User is not authenticated or lacks permission to create tasks.</li>
+        </ul>
+
+        <h3>2.6 GET /tasks/{id} — proposed</h3>
+        <p>Purpose: retrieve a single task by its identifier.</p>
+        <pre><code>GET /api/tasks/task_123</code></pre>
+        <pre><code>{
+  "id": "task_123",
+  "title": "Prepare weekly report",
+  "status": "PENDING"
+}</code></pre>
+        <p>A task that does not exist may return 404 Not Found. A real system may return 403 Forbidden instead where access is restricted. Verify the actual security and error-handling policy.</p>
+
+        <h3>2.7 PATCH /tasks/{id} — proposed</h3>
+        <p>Purpose: update one or more supported task fields. PATCH is used here as an example; the real API may use PUT or another method.</p>
+        <pre><code>PATCH /api/tasks/task_123
+
+{
+  "status": "IN_PROGRESS"
+}</code></pre>
+        <pre><code>{
+  "id": "task_123",
+  "title": "Prepare weekly report",
+  "status": "IN_PROGRESS"
+}</code></pre>
+        <p>Confirm which fields can be changed, whether null values are accepted, how concurrent edits are handled, and which status transitions are allowed.</p>
+
+        <h3>2.8 DELETE /tasks/{id} — proposed</h3>
+        <p>Purpose: delete a task only if deletion is a supported feature and the signed-in user has permission.</p>
+        <pre><code>DELETE /api/tasks/task_123</code></pre>
+        <p>Illustrative success: HTTP 204 No Content. Deletion may be permanent, soft-deleted, or unsupported. Confirm actual behaviour and any confirmation requirements before documenting this route as available.</p>
+
+        <h3>2.9 Common HTTP status codes</h3>
+        <table>
+          <thead>
+            <tr><th>Code</th><th>General meaning</th><th>What to verify in TaskFlow</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>200</td><td>Request succeeded</td><td>Response schema and whether the operation returns a body</td></tr>
+            <tr><td>201</td><td>Resource created</td><td>Whether create operations use 201 or another code</td></tr>
+            <tr><td>204</td><td>Succeeded with no response body</td><td>Whether delete/update operations use 204</td></tr>
+            <tr><td>400</td><td>Request is invalid</td><td>Validation error structure and field-level messages</td></tr>
+            <tr><td>401</td><td>Authentication is missing or invalid</td><td>Actual sign-in/session expiry behaviour</td></tr>
+            <tr><td>403</td><td>User is not allowed to perform the action</td><td>Role and ownership rules</td></tr>
+            <tr><td>404</td><td>Resource or route was not found</td><td>Unknown-ID and route handling</td></tr>
+            <tr><td>500</td><td>Unexpected server error</td><td>Safe error response and server-side logging</td></tr>
+          </tbody>
+        </table>
+
+        <h3>2.10 API security and documentation rules</h3>
+        <ul class="clean">
+          <li>Do not publish real access tokens, passwords, private keys, or production user data.</li>
+          <li>Document authorization requirements for every protected endpoint.</li>
+          <li>Do not claim an endpoint exists until it is found in source code or an approved API specification.</li>
+          <li>Use sanitized examples and explain required versus optional fields.</li>
+          <li>Record actual error schema, pagination, rate limits, and versioning only when verified.</li>
+        </ul>
+      </section>
+
+      <section id="help" class="alt">
+        <h2>3. Troubleshooting and FAQ</h2>
+        <p class="intro">The causes and solutions below are general guidance for a web task-management application. Confirm the exact messages and recovery steps against the actual TaskFlow implementation.</p>
+
+        <h3>3.1 I cannot sign in</h3>
+        <p>Possible causes: mistyped credentials, an inactive account, an expired session, a service outage, or a network problem.</p>
+        <p>Try: check the username/email and password, verify the correct environment URL, refresh the page, and use the approved password-reset process if available. If the problem continues, contact the administrator with the time and exact error message. Never send your password.</p>
+
+        <h3>3.2 The task list is empty</h3>
+        <p>Possible causes: no tasks have been created, a filter is active, the account has limited access, or the task request failed.</p>
+        <p>Try: clear filters, check the correct workspace/account, refresh the page, and look for an error message. Ask an administrator to verify access if expected tasks are still missing.</p>
+
+        <h3>3.3 I cannot create a task</h3>
+        <p>Possible causes: a required field is missing, the title is invalid, the session has expired, or the user lacks permission.</p>
+        <p>Try: complete all required fields, remove unsupported characters only if the validation message instructs you to, sign in again if needed, and retry. Record the validation message if it fails again.</p>
+
+        <h3>3.4 My task changes do not appear</h3>
+        <p>Possible causes: the save action was not completed, the server rejected the update, the list is stale, or the update was made to a different task.</p>
+        <p>Try: check for a success/error message, reopen the task, refresh the list, and verify its ID or title. Avoid repeatedly submitting an operation if it might create duplicates.</p>
+
+        <h3>3.5 I see an access denied message</h3>
+        <p>You may not be signed in, or your account may not have permission for that task or action. Sign in again and check that you are using the correct account. If access should be allowed, ask the administrator to check the user's role and task ownership.</p>
+
+        <h3>3.6 The page is blank or keeps loading</h3>
+        <p>Check your internet connection, reload the page once, and try a supported browser. If the problem continues, record the page URL (excluding sensitive query parameters), browser/version, time, and steps that caused the issue. Developers should inspect browser console errors, network requests, and server logs.</p>
+
+        <h3>3.7 I receive a server error</h3>
+        <p>A server error usually requires investigation by the project team. Note the time, request/action, and any request or correlation ID shown. Do not expose stack traces, credentials, or internal server details in public reports. Developers should inspect server logs and reproduce the issue in a safe test environment.</p>
+
+        <h3>3.8 API returns 401 or 403</h3>
+        <p>For 401, verify the authentication mechanism and whether the session/token is valid. For 403, verify the user's permissions and resource access. The exact distinction and response body must match TaskFlow's actual implementation.</p>
+
+        <h3>3.9 API returns 400</h3>
+        <p>Check the request method, URL, JSON syntax, required fields, data types, and allowed values. Compare the request with the verified schema. Use the response's validation details if provided.</p>
+
+        <h3>3.10 Frequently asked questions</h3>
+        <table>
+          <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+          <tbody>
+            <tr><td>Can I recover a deleted task?</td><td>Only if TaskFlow supports recovery, a recycle bin, or backups. Confirm with the administrator; do not assume recovery is available.</td></tr>
+            <tr><td>Can I change a task's status?</td><td>Use the supported edit/status control if available. The allowed status values and transitions must be verified.</td></tr>
+            <tr><td>Why can another user see different tasks?</td><td>Users may have different roles, ownership, or workspace access. The actual visibility rules must be confirmed.</td></tr>
+            <tr><td>Where should I report a bug?</td><td>Use the team's approved support channel. Include steps, expected result, actual result, time, and a sanitized screenshot if useful.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="qa">
+        <h2>4. QA Verification Checklist</h2>
+        <p class="intro">Use this checklist to turn the draft into verified documentation. Mark each item only after checking the running application, source code, tests, or an approved specification.</p>
+        <ul class="checks">
+          <li><span class="box"></span>Confirm the real sign-in workflow, required fields, and session behaviour.</li>
+          <li><span class="box"></span>Confirm the task fields shown to users and the required/optional rules.</li>
+          <li><span class="box"></span>Confirm actual task status values and permitted transitions.</li>
+          <li><span class="box"></span>Confirm whether task search, filters, sorting, due dates, editing, and deletion exist.</li>
+          <li><span class="box"></span>Find the actual API route definitions and HTTP methods in the source code.</li>
+          <li><span class="box"></span>Record exact request and response schemas, including nullability and validation limits.</li>
+          <li><span class="box"></span>Verify authentication and authorization requirements for each endpoint.</li>
+          <li><span class="box"></span>Run successful and failing requests and record the real HTTP status codes.</li>
+          <li><span class="box"></span>Confirm pagination, sorting, rate limits, versioning, and error response format if present.</li>
+          <li><span class="box"></span>Check that all examples use fake data and contain no secrets.</li>
+          <li><span class="box"></span>Test the troubleshooting steps on the real application.</li>
+          <li><span class="box"></span>Ask a developer or project lead to review the final document before release.</li>
+        </ul>
+
+        <h3>Suggested QA test cases</h3>
+        <table>
+          <thead>
+            <tr><th>ID</th><th>Test</th><th>Expected result (verify against actual spec)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>QA-01</td><td>Sign in with valid credentials</td><td>User reaches the authenticated area.</td></tr>
+            <tr><td>QA-02</td><td>Sign in with invalid credentials</td><td>Access is denied with a safe, understandable message.</td></tr>
+            <tr><td>QA-03</td><td>Create a task with valid required fields</td><td>Task is saved and visible in the appropriate list.</td></tr>
+            <tr><td>QA-04</td><td>Submit a task without a required field</td><td>Validation prevents invalid data and explains the issue.</td></tr>
+            <tr><td>QA-05</td><td>Update an existing task</td><td>Supported fields persist after reload.</td></tr>
+            <tr><td>QA-06</td><td>Request an unknown task ID through the API</td><td>API returns the documented not-found/access response.</td></tr>
+            <tr><td>QA-07</td><td>Call a protected endpoint without credentials</td><td>API denies access according to the actual auth policy.</td></tr>
+            <tr><td>QA-08</td><td>Cause a temporary network failure</td><td>UI gives recoverable feedback and avoids duplicate submission.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="prompts" class="alt">
+        <h2>5. Prompt History</h2>
+        <p class="intro">A transparent prompt log for the documentation workflow. These prompts are proposed examples of the iteration process for this submission; they should not be presented as an exact transcript of prompts run in an external tool unless they were actually used.</p>
+
+        <h3>Prompt 1 — Initial structure</h3>
+        <div class="prompt">
+          <p>“Act as a technical writer. Create an outline for documentation for a task management web application called TaskFlow. Include a Getting Started guide for end users, an API reference for developers, troubleshooting, prompt history, and a reflection. Use plain English and consistent headings.”</p>
+          <em>Purpose: Establish the required sections and a consistent structure.</em>
+        </div>
+
+        <h3>Prompt 2 — First-pass user guide</h3>
+        <div class="prompt">
+          <p>“Draft a beginner-friendly Getting Started guide for TaskFlow. Explain how a user might sign in, view tasks, create a task, update a task, and sign out. Use numbered steps and simple language. Clearly mark any assumed screen labels or features that have not been confirmed.”</p>
+          <em>Review finding: A generic guide can invent features or button names. Interface details must be checked against the real application.</em>
+        </div>
+
+        <h3>Prompt 3 — API reference refinement</h3>
+        <div class="prompt">
+          <p>“Create an API reference from the actual TaskFlow route/controller files. For each endpoint, document the HTTP method, exact path, authentication, path/query parameters, request JSON, success response, validation errors, and HTTP status codes. Do not invent fields or routes. If the source files are missing, explicitly label examples as illustrative.”</p>
+          <em>Review finding: The TaskFlow source code and API specification were not present. The API section is therefore labelled proposed/illustrative instead of verified.</em>
+        </div>
+
+        <h3>Prompt 4 — Troubleshooting</h3>
+        <div class="prompt">
+          <p>“Write a troubleshooting section for TaskFlow users and developers. For each issue, explain likely causes, safe diagnostic steps, and when to contact support. Separate user actions from developer investigation and do not claim unverified features exist.”</p>
+          <em>Purpose: Make the advice actionable while avoiding unsupported promises.</em>
+        </div>
+
+        <h3>Prompt 5 — Fact-check and consistency pass</h3>
+        <div class="prompt">
+          <p>“Review the Getting Started, API Reference, and Troubleshooting sections together. Identify unsupported claims, distinguish confirmed facts from assumptions, standardize headings and terminology, use plain English, and ensure all sample credentials and tokens are fake. Do not silently fill gaps with guesses.”</p>
+          <em>Outcome: The final draft highlights the lack of project-specific source material and adds a QA verification checklist.</em>
+        </div>
+
+        <h3>Prompt 6 — Final assembly</h3>
+        <div class="prompt">
+          <p>“Assemble the reviewed sections into one professional PDF-ready document. Use consistent H2/H3-style hierarchy, black-and-white text and tables, include one useful conceptual diagram, include the prompt history, and write a reflection under 200 words. Add a clear note where API details require verification.”</p>
+        </div>
+      </section>
+
+      <section id="reflect">
+        <h2>6. Reflection</h2>
+        <p>The hardest part of this task was accuracy. AI can produce convincing documentation even when it does not have the source code, so plausible endpoint names, request fields, status codes, and interface steps can be wrong. The safest approach was to separate the general guidance from details that require confirmation and to create a checklist for reviewing the actual application and API implementation. Iterative prompting improved the structure and usefulness of the document. The first prompts established the sections, while later prompts asked for explicit assumptions, exact API evidence, consistent terminology, safe examples, and testable troubleshooting steps. This made the output easier to scan and reduced the risk of presenting guesses as facts. However, prompting alone cannot verify a system. The API section remains illustrative until the TaskFlow source files or approved specification are reviewed and the examples are tested.</p>
+        <div class="note">
+          <span class="label">Word count</span>
+          <p>140 words (maximum allowed: 200).</p>
+        </div>
+      </section>
+
+      <section id="appendix" class="alt">
+        <h2>Appendix A. Fact-checking and release checklist</h2>
+        <ul class="checks">
+          <li><span class="box"></span>Replace all illustrative API paths with verified routes.</li>
+          <li><span class="box"></span>Replace example request/response fields with exact schemas from the code or specification.</li>
+          <li><span class="box"></span>Verify authentication, authorization, status codes, and error bodies.</li>
+          <li><span class="box"></span>Update the user guide to match real page names, controls, and available features.</li>
+          <li><span class="box"></span>Capture genuine screenshots from TaskFlow if the assignment expects interface images; do not use the conceptual diagram as a product screenshot.</li>
+          <li><span class="box"></span>Run the API examples against a test environment and record the results.</li>
+          <li><span class="box"></span>Review the final PDF for spelling, page breaks, readable diagrams, and consistent formatting.</li>
+          <li><span class="box"></span>Remove this accuracy note only after the project-specific details have been verified.</li>
+        </ul>
+      </section>
+
+      <footer>
+        <div class="end">End of document.</div>
+        <p>TaskFlow Technical Documentation · Version 1.0 · 18 October 2026 · Print this page to PDF if a file submission is required.</p>
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
